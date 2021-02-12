@@ -28,6 +28,6 @@ func TestLevelFilter(t *testing.T) {
 	Info("info")
 	Error("error")
 
-	expected := "[ERROR] error\n"
+	expected := "[ERRO] error\n"
 	assert.Equal(t, expected, buf.String())
 }

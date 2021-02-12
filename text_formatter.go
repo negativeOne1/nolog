@@ -17,7 +17,7 @@ func NewBasicTextFormatter(ignoreTime bool, timestampFormat string) *TextFormatt
 }
 
 func (f *TextFormatter) Format(e Entry) ([]byte, error) {
-	s := "[" + e.Level.String() + "]"
+	s := "[" + e.Level.String()[0:4] + "]"
 	if !f.ignoreTime {
 		s += " " + e.Time.Format(f.timestampFormat)
 	}
