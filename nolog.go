@@ -35,7 +35,7 @@ func New() *Logger {
 	return &Logger{
 		level:     LevelInfo,
 		writer:    os.Stdout,
-		formatter: new(TextFormatter),
+		formatter: NewBasicTextFormatter(),
 	}
 }
 

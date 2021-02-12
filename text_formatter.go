@@ -6,10 +6,18 @@ type Formatter interface {
 	Format(Entry) ([]byte, error)
 }
 
-type TextFormatter struct{}
+type TextFormatter struct {
+	formatString string
+}
+
+func NewBasicTextFormatter() *TextFormatter {
+	return &TextFormatter{
+		formatString: "[%s] %s\n",
+	}
+}
 
 func (f *TextFormatter) Format(e Entry) ([]byte, error) {
 	l := prefixes[e.Level]
-	s := fmt.Sprintf("[%s] %s\n", l, e.Message)
+	s := fmt.Sprintf(f.formatString, l, e.Message)
 	return []byte(s), nil
 }
