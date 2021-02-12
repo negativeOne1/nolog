@@ -27,14 +27,16 @@ var prefixes map[Threshold]string = map[Threshold]string{
 }
 
 type Logger struct {
-	level  Threshold
-	writer io.Writer
+	level     Threshold
+	writer    io.Writer
+	formatter Formatter
 }
 
 func New() *Logger {
 	return &Logger{
-		level:  LevelInfo,
-		writer: os.Stdout,
+		level:     LevelInfo,
+		writer:    os.Stdout,
+		formatter: new(TextFormatter),
 	}
 }
 
@@ -46,10 +48,28 @@ func SetLevel(level Threshold) {
 	std.level = level
 }
 
+type Formatter interface {
+	Format(args ...interface{}) ([]byte, error)
+}
+
+type TextFormatter struct{}
+
+func (f *TextFormatter) Format(args ...interface{}) ([]byte, error) {
+	ss := ""
+	for _, a := range args[1].([]interface{}) {
+		ss += a.(string)
+	}
+	s := fmt.Sprintf("[%s] %s\n", prefixes[args[0].(Threshold)], ss)
+	return []byte(s), nil
+}
+
 func (l *Logger) writeLog(level Threshold, args ...interface{}) {
 	if level >= l.level {
-		s := fmt.Sprintf("[%s] %s\n", prefixes[level], args)
-		l.writer.Write([]byte(s))
+		b, err := l.formatter.Format(level, args)
+		if err != nil {
+			panic(err)
+		}
+		l.writer.Write(b)
 	}
 }
 
