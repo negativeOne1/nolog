@@ -1,24 +1,23 @@
 package nolog
 
 import (
-	"fmt"
 	"io"
 	"os"
 )
 
 var std = New()
 
-type Threshold int
+type Level int
 
 const (
-	LevelDebug Threshold = iota
+	LevelDebug Level = iota
 	LevelInfo
 	LevelWarn
 	LevelError
 	LevelFatal
 )
 
-var prefixes map[Threshold]string = map[Threshold]string{
+var prefixes map[Level]string = map[Level]string{
 	LevelDebug: "DEBUG",
 	LevelInfo:  "INFO",
 	LevelWarn:  "WARN",
@@ -27,7 +26,7 @@ var prefixes map[Threshold]string = map[Threshold]string{
 }
 
 type Logger struct {
-	level     Threshold
+	level     Level
 	writer    io.Writer
 	formatter Formatter
 }
@@ -44,28 +43,13 @@ func SetWriter(writer io.Writer) {
 	std.writer = writer
 }
 
-func SetLevel(level Threshold) {
+func SetLevel(level Level) {
 	std.level = level
 }
 
-type Formatter interface {
-	Format(args ...interface{}) ([]byte, error)
-}
-
-type TextFormatter struct{}
-
-func (f *TextFormatter) Format(args ...interface{}) ([]byte, error) {
-	ss := ""
-	for _, a := range args[1].([]interface{}) {
-		ss += a.(string)
-	}
-	s := fmt.Sprintf("[%s] %s\n", prefixes[args[0].(Threshold)], ss)
-	return []byte(s), nil
-}
-
-func (l *Logger) writeLog(level Threshold, args ...interface{}) {
+func (l *Logger) writeLog(level Level, args ...interface{}) {
 	if level >= l.level {
-		b, err := l.formatter.Format(level, args)
+		b, err := l.formatter.Format(NewEntry(level, args...))
 		if err != nil {
 			panic(err)
 		}

@@ -2,15 +2,10 @@ package nolog
 
 import (
 	"bytes"
-	"strconv"
 	"testing"
-)
 
-func assertStringEqual(t *testing.T, expect, got string) {
-	if expect != got {
-		t.Errorf("Expected: %s GOT: %s", strconv.Quote(expect), strconv.Quote(got))
-	}
-}
+	"github.com/stretchr/testify/assert"
+)
 
 func TestBasic(t *testing.T) {
 	buf := new(bytes.Buffer)
@@ -18,7 +13,7 @@ func TestBasic(t *testing.T) {
 	Info("info")
 
 	expected := "[INFO] info\n"
-	assertStringEqual(t, expected, buf.String())
+	assert.Equal(t, expected, buf.String())
 }
 
 func TestLevelFilter(t *testing.T) {
@@ -29,5 +24,5 @@ func TestLevelFilter(t *testing.T) {
 	Error("error")
 
 	expected := "[ERROR] error\n"
-	assertStringEqual(t, expected, buf.String())
+	assert.Equal(t, expected, buf.String())
 }
