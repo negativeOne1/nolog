@@ -9,6 +9,10 @@ var std = New()
 
 type Level int
 
+func (l Level) String() string {
+	return prefixes[l]
+}
+
 const (
 	LevelDebug Level = iota
 	LevelInfo
@@ -35,7 +39,7 @@ func New() *Logger {
 	return &Logger{
 		level:     LevelInfo,
 		writer:    os.Stdout,
-		formatter: NewBasicTextFormatter(),
+		formatter: NewBasicTextFormatter(false, ""),
 	}
 }
 
@@ -45,6 +49,10 @@ func SetWriter(writer io.Writer) {
 
 func SetLevel(level Level) {
 	std.level = level
+}
+
+func SetFormatter(formatter Formatter) {
+	std.formatter = formatter
 }
 
 func (l *Logger) writeLog(level Level, args ...interface{}) {

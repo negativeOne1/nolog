@@ -8,7 +8,7 @@ import (
 )
 
 func TestFormatting(t *testing.T) {
-	tf := NewBasicTextFormatter()
+	tf := NewBasicTextFormatter(true, "")
 	e := Entry{
 		Time:    time.Now(),
 		Message: "foo",

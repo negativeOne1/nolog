@@ -10,6 +10,8 @@ import (
 func TestBasic(t *testing.T) {
 	buf := new(bytes.Buffer)
 	SetWriter(buf)
+	SetFormatter(NewBasicTextFormatter(true, ""))
+
 	Info("info")
 
 	expected := "[INFO] info\n"
@@ -19,7 +21,10 @@ func TestBasic(t *testing.T) {
 func TestLevelFilter(t *testing.T) {
 	buf := new(bytes.Buffer)
 	SetWriter(buf)
+	SetFormatter(NewBasicTextFormatter(true, ""))
+
 	SetLevel(LevelError)
+
 	Info("info")
 	Error("error")
 

@@ -1,23 +1,26 @@
 package nolog
 
-import "fmt"
-
-type Formatter interface {
-	Format(Entry) ([]byte, error)
-}
-
 type TextFormatter struct {
-	formatString string
+	timestampFormat string
+	ignoreTime      bool
 }
 
-func NewBasicTextFormatter() *TextFormatter {
+func NewBasicTextFormatter(ignoreTime bool, timestampFormat string) *TextFormatter {
+	if timestampFormat == "" {
+		timestampFormat = defaultTimestampFormat
+	}
+
 	return &TextFormatter{
-		formatString: "[%s] %s\n",
+		timestampFormat,
+		ignoreTime,
 	}
 }
 
 func (f *TextFormatter) Format(e Entry) ([]byte, error) {
-	l := prefixes[e.Level]
-	s := fmt.Sprintf(f.formatString, l, e.Message)
+	s := "[" + e.Level.String() + "]"
+	if !f.ignoreTime {
+		s += " " + e.Time.Format(f.timestampFormat)
+	}
+	s += " " + e.Message + "\n"
 	return []byte(s), nil
 }
