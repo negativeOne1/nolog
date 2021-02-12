@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestFormatting(t *testing.T) {
+func TestTextFormatting(t *testing.T) {
 	tf := NewBasicTextFormatter(true, "")
 	e := Entry{
 		Time:    time.Now(),
